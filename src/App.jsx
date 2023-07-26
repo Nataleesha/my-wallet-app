@@ -1,35 +1,55 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState } from "react";
+import { ethers } from "ethers";
+import { formatEther } from "ethers";
 
-function App() {
-  const [count, setCount] = useState(0)
+import { Container, InnerContainer, Header, Title, Form } from "./App.styled";
+
+const App = () => {
+  const [walletAddress, setWalletAddress] = useState(null);
+  const [walletBalance, setWalletBalance] = useState(null);
+
+  const connectWallet = async () => {
+    let signer = null;
+    let provider;
+    if (window.ethereum == null) {
+      alert("MetaMask is not installed");
+    } else {
+      provider = new ethers.BrowserProvider(window.ethereum);
+      signer = await provider.getSigner();
+      setWalletAddress(signer.address);
+      const balance = await provider.getBalance(signer.address);
+      const balanceInEth = parseFloat(formatEther(balance)).toFixed(2);
+      setWalletBalance(balanceInEth);
+    }
+  };
+
+  const formattedAddress = (str) => {
+    const formatted = str.substr(0, 5) + "..." + str.substr(-4);
+    return formatted;
+  };
 
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
+    <Container>
+      <Header>
+        <p>Logo</p>
+        <div>
+          <button type="button" onClick={connectWallet}>
+            {!walletBalance
+              ? "Connect Wallet"
+              : `${walletBalance}  ${formattedAddress(walletAddress)}`}
+          </button>
+        </div>
+      </Header>
+      <InnerContainer>
+        <Title>My Wallet</Title>
+        <Form>
+          <input placeholder="0x5083Fbc9a4004B5d7a8a10e2067499Aa687cb34C" />
+          <input placeholder="0.00" />
+          <button type="submit">Transfer</button>
+        </Form>
+      </InnerContainer>
+    </Container>
+  );
+};
 
-export default App
+export default App;
