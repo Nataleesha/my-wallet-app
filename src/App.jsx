@@ -7,20 +7,58 @@ import { Container, InnerContainer, Header, Title, Form } from "./App.styled";
 const App = () => {
   const [walletAddress, setWalletAddress] = useState(null);
   const [walletBalance, setWalletBalance] = useState(null);
+  const [signer, setSigner] = useState();
+  const [error, setError] = useState("");
+  const [sending, setSending] = useState(false);
 
   const connectWallet = async () => {
-    let signer = null;
-    let provider;
     if (window.ethereum == null) {
-      alert("MetaMask is not installed");
+      setError("MetaMask is not installed. Please install it.");
     } else {
-      provider = new ethers.BrowserProvider(window.ethereum);
-      signer = await provider.getSigner();
+      const provider = new ethers.BrowserProvider(window.ethereum);
+      const signer = await provider.getSigner();
+      setSigner(signer);
       setWalletAddress(signer.address);
       const balance = await provider.getBalance(signer.address);
-      const balanceInEth = parseFloat(formatEther(balance)).toFixed(2);
-      setWalletBalance(balanceInEth);
+      setWalletBalance(formatEth(balance));
+      setError("");
     }
+  };
+
+  const handleTransfer = async ({ ether, addr }) => {
+    try {
+      const tx = await signer.sendTransaction({
+        from: walletAddress,
+        to: addr,
+        value: ethers.parseEther(ether),
+      });
+      console.log("TX: ", tx);
+    } catch (err) {
+      if (err.toString().includes("-32000")) {
+        setError("Insufficient funds");
+      } else {
+        setError("Some error occured");
+      }
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const data = new FormData(e.target);
+    if (!walletAddress) {
+      setError("Please connect your wallet");
+      return;
+    }
+    setSending(true);
+    await handleTransfer({
+      ether: data.get("ether"),
+      addr: data.get("addr"),
+    });
+    setSending(false);
+  };
+
+  const formatEth = (eth) => {
+    return parseFloat(formatEther(eth)).toFixed(2);
   };
 
   const formattedAddress = (str) => {
@@ -42,11 +80,23 @@ const App = () => {
       </Header>
       <InnerContainer>
         <Title>My Wallet</Title>
-        <Form>
-          <input placeholder="0x5083Fbc9a4004B5d7a8a10e2067499Aa687cb34C" />
-          <input placeholder="0.00" />
-          <button type="submit">Transfer</button>
+        <Form onSubmit={handleSubmit}>
+          <input
+            placeholder="Recipient Address"
+            type="text"
+            name="addr"
+            required
+            pattern="^0x[0-9,a-f,A-F]{40}$"
+          />
+          <input
+            placeholder="Amount in ETH"
+            type="text"
+            name="ether"
+            required
+          />
+          <button type="submit">{!sending ? "Transfer" : "Sending..."}</button>
         </Form>
+        <p>{error ? error : null}</p>
       </InnerContainer>
     </Container>
   );
