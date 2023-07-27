@@ -93,6 +93,7 @@ const App = () => {
             type="text"
             name="ether"
             required
+            pattern="[0-9]*\.?[0-9]*."
           />
           <button type="submit">{!sending ? "Transfer" : "Sending..."}</button>
         </Form>
