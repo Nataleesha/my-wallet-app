@@ -137,3 +137,8 @@ export const Links = styled.div`
     }
   }
 `;
+
+export const Logo = styled.img`
+  display: inline-block;
+  margin-right: 10px;
+`;

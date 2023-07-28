@@ -3,6 +3,7 @@ import { ethers } from "ethers";
 import { formatEther } from "ethers";
 
 import Loader from "./components/Loader/Loader";
+import logo from "./assets/github.png";
 
 import {
   Container,
@@ -15,6 +16,7 @@ import {
   Input,
   SubmitButton,
   Links,
+  Logo,
 } from "./App.styled";
 
 const App = () => {
@@ -152,6 +154,7 @@ const App = () => {
             target="_blank"
             rel="noopener noreferrer"
           >
+            <Logo src={logo} alt="logo" width="16px" height="16px" />
             Inspect the code
           </a>
         </Links>
