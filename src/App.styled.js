@@ -73,7 +73,6 @@ export const Form = styled.form`
 
   @media screen and (min-width: 768px) {
     width: 500px;
-    background-color: yellow;
   }
 `;
 
