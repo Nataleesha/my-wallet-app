@@ -2,7 +2,20 @@ import { useState } from "react";
 import { ethers } from "ethers";
 import { formatEther } from "ethers";
 
-import { Container, InnerContainer, Header, Title, Form } from "./App.styled";
+import Loader from "./components/Loader/Loader";
+
+import {
+  Container,
+  InnerContainer,
+  ConnectButton,
+  Header,
+  Title,
+  Form,
+  ErrorMessage,
+  Input,
+  SubmitButton,
+  Links,
+} from "./App.styled";
 
 const App = () => {
   const [walletAddress, setWalletAddress] = useState(null);
@@ -67,39 +80,83 @@ const App = () => {
   };
 
   return (
-    <Container>
+    <>
       <Header>
-        <p>Logo</p>
         <div>
-          <button type="button" onClick={connectWallet}>
+          <svg
+            width="50"
+            height="50"
+            viewBox="0 0 17 16"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <g clipPath="url(#clip0_5_2812)">
+              <path
+                d="M8.07202 16C12.4903 16 16.072 12.4183 16.072 8C16.072 3.58172 12.4903 0 8.07202 0C3.65374 0 0.0720215 3.58172 0.0720215 8C0.0720215 12.4183 3.65374 16 8.07202 16Z"
+                fill="#B49FFC"
+              />
+              <path
+                fillRule="evenodd"
+                clipRule="evenodd"
+                d="M4.07202 4V5.6H7.27202V7.2H4.07202V8.8H8.87202V5.6H10.472V10.4H4.07202V12H12.072V4H4.07202Z"
+                fill="white"
+              />
+            </g>
+            <defs>
+              <clipPath id="clip0_5_2812">
+                <rect
+                  width="16"
+                  height="16"
+                  fill="white"
+                  transform="translate(0.0720215)"
+                />
+              </clipPath>
+            </defs>
+          </svg>
+        </div>
+        <div>
+          <ConnectButton type="button" onClick={connectWallet}>
             {!walletBalance
               ? "Connect Wallet"
               : `${walletBalance}  ${formattedAddress(walletAddress)}`}
-          </button>
+          </ConnectButton>
         </div>
       </Header>
-      <InnerContainer>
-        <Title>My Wallet</Title>
-        <Form onSubmit={handleSubmit}>
-          <input
-            placeholder="Recipient Address"
-            type="text"
-            name="addr"
-            required
-            pattern="^0x[0-9,a-f,A-F]{40}$"
-          />
-          <input
-            placeholder="Amount in ETH"
-            type="text"
-            name="ether"
-            required
-            pattern="[0-9]*\.?[0-9]*."
-          />
-          <button type="submit">{!sending ? "Transfer" : "Sending..."}</button>
-        </Form>
-        <p>{error ? error : null}</p>
-      </InnerContainer>
-    </Container>
+      <Container>
+        <InnerContainer>
+          <Title>My Wallet</Title>
+          <Form onSubmit={handleSubmit}>
+            <ErrorMessage>{error ? error : null}</ErrorMessage>
+            <Input
+              placeholder="Recipient Address"
+              type="text"
+              name="addr"
+              required
+              pattern="^0x[0-9,a-f,A-F]{40}$"
+            />
+            <Input
+              placeholder="Amount in ETH"
+              type="text"
+              name="ether"
+              required
+              pattern="[0-9]*\.?[0-9]*."
+            />
+            <SubmitButton type="submit" disabled={sending}>
+              {!sending ? "Transfer" : <Loader />}
+            </SubmitButton>
+          </Form>
+        </InnerContainer>
+        <Links>
+          <a
+            href="https://github.com/Nataleesha/my-wallet-app"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Inspect the code
+          </a>
+        </Links>
+      </Container>
+    </>
   );
 };
 

@@ -3,11 +3,13 @@
   line-height: 1.5;
   font-weight: 400;
 
-  background-color: #fff;
+  background-color: #0f1629;
+  color: #e2e5ee;
 }
 
 a {
   text-decoration: none;
+  font-size: 18px;
 }
 
 body {
@@ -21,4 +23,8 @@ ul,
 p {
   margin: 0;
   padding: 0;
+}
+
+#root {
+  width: 100%;
 }
