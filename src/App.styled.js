@@ -65,7 +65,7 @@ export const Form = styled.form`
   position: relative;
   flex-direction: column;
   align-items: center;
-  width: 100%;
+  width: 400px;
   padding: 30px;
   margin-bottom: 100px;
   border-radius: 15px;
@@ -73,6 +73,7 @@ export const Form = styled.form`
 
   @media screen and (min-width: 768px) {
     width: 500px;
+    background-color: yellow;
   }
 `;
 
@@ -84,7 +85,7 @@ export const ErrorMessage = styled.span`
 `;
 
 export const Input = styled.input`
-  width: 100%;
+  width: 90%;
   height: 36px;
   background-color: #e2e5ee;
   border: none;
